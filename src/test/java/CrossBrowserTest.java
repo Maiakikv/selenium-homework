@@ -1,32 +1,37 @@
-//headless
-
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class JSexecutor {
+public class CrossBrowserTest {
     WebDriver driver;
 
-    public JSexecutor() {
+    public CrossBrowserTest() {
     }
 
     @BeforeMethod
-    public void beforeTest() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
-        this.driver = new ChromeDriver(options);
-        this.driver = new HtmlUnitDriver(true);
+    @Parameters("browser")
+    public void beforeTest(String browser) {
+        if (browser.equalsIgnoreCase("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            this.driver = new ChromeDriver();
+            this.driver.manage().window().maximize();
+        } else if (browser.equalsIgnoreCase("Edge")) {
+            WebDriverManager.edgedriver().setup();
+            this.driver = new EdgeDriver();
+            this.driver.manage().window().maximize();
+        } else {
+            System.out.println("incorrect browser");
+        }
+
     }
 
     @Test
@@ -56,5 +61,4 @@ public class JSexecutor {
     public void after() {
         this.driver.quit();
     }
-}
 }
